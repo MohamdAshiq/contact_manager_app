@@ -1,4 +1,6 @@
+import 'package:contact_manager_app/models/screen_mode.dart';
 import 'package:contact_manager_app/provider/theme_provider.dart';
+import 'package:contact_manager_app/screens/add_or_edit_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,29 +27,38 @@ class HomePage extends StatelessWidget {
       ),
       body: SafeArea(
         child: ListView.separated(
-          separatorBuilder: (context, index) => Divider(),
+          separatorBuilder: (context, index) => SizedBox(),
           padding: EdgeInsets.all(10),
           itemCount: 10,
           itemBuilder: (context, index) => ListTile(
             onTap: () {},
+            minTileHeight: 75,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
             leading: Icon(Icons.account_circle, size: 42),
             minLeadingWidth: 50,
-            contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+            contentPadding: EdgeInsets.only(left: 15, top: 5, bottom: 5),
             title: Text("Name ${index + 1}"),
-            subtitle: Column(
-              spacing: 5,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("email${index + 1}@gmail.com"),
-                Text("9876543210"),
-              ],
+            subtitle: Padding(
+              padding: EdgeInsets.symmetric(vertical: 3),
+              child: Text("email${index + 1}@gmail.com"),
             ),
-            trailing: Icon(Icons.arrow_forward_ios_rounded, size: 20),
+            trailing: IconButton(
+              icon: Icon(Icons.arrow_forward_ios_rounded, size: 20),
+              onPressed: () {},
+            ),
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AddOrEditScreen(screenMode: ScreenMode.add),
+          ),
+        ),
+        child: Icon(Icons.add),
       ),
     );
   }
