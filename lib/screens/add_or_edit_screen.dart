@@ -9,6 +9,7 @@ class AddOrEditScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isEditScreen = screenMode == ScreenMode.edit;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -16,9 +17,7 @@ class AddOrEditScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
           icon: Icon(Icons.arrow_back_ios),
         ),
-        title: Text(
-          screenMode == ScreenMode.add ? "Add Contact" : "Edit Contact",
-        ),
+        title: Text(isEditScreen ? "Edit Contact" : "Add Contact"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
@@ -47,7 +46,7 @@ class AddOrEditScreen extends StatelessWidget {
                 ),
               ),
               onPressed: () {},
-              child: Text("Add Contact"),
+              child: Text(isEditScreen ? "Save Changes" : "Add Contact"),
             ),
           ],
         ),
