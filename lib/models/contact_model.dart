@@ -12,7 +12,7 @@ class ContactModel {
   });
 
   Map<String, dynamic> toMap() {
-    return {"id": id, "name": name, "phoneNo": phoneNo, "email": email};
+    return {"id": id, "name": name, "phone": phoneNo, "email": email};
   }
 
   factory ContactModel.fromMap(Map<String, dynamic> map) {

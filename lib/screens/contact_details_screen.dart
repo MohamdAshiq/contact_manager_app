@@ -1,10 +1,13 @@
+import 'package:contact_manager_app/models/contact_model.dart';
 import 'package:contact_manager_app/models/screen_mode.dart';
 import 'package:contact_manager_app/screens/add_or_edit_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ContactDetailsScreen extends StatelessWidget {
-  const ContactDetailsScreen({super.key});
+  const ContactDetailsScreen({super.key, required this.contact});
+
+  final ContactModel contact;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +18,7 @@ class ContactDetailsScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
           icon: Icon(Icons.arrow_back_ios, size: 20),
         ),
-        title: Text("User Name"),
+        // title: Text(contact.name),
         actions: [
           IconButton(
             onPressed: () => Navigator.push(
@@ -37,14 +40,14 @@ class ContactDetailsScreen extends StatelessWidget {
           children: [
             Center(
               child: Hero(
-                tag: 'profile_icon_0',
-                child: Icon(Icons.account_circle, size: 100),
+                tag: 'profile_icon_${contact.id}',
+                child: Icon(Icons.account_circle, size: 120),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 15),
               child: Text(
-                "User Name",
+                contact.name,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
@@ -60,7 +63,7 @@ class ContactDetailsScreen extends StatelessWidget {
                       ListTile(
                         contentPadding: EdgeInsets.only(left: 20, right: 10),
                         minTileHeight: 70,
-                        title: Text("9876543210"),
+                        title: Text(contact.phoneNo),
                         subtitle: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 5),
                           child: Text("Mobile | India"),

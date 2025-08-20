@@ -1,3 +1,4 @@
+import 'package:contact_manager_app/provider/contacts_provider.dart';
 import 'package:contact_manager_app/provider/theme_provider.dart';
 import 'package:contact_manager_app/services/theme_services.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ThemeProvider(isDark)),
+        ChangeNotifierProvider(create: (context) => ContactsProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, value, _) => MaterialApp(

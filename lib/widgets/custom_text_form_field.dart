@@ -6,15 +6,18 @@ class CustomTextFormField extends StatelessWidget {
     required this.labelText,
     required this.icon,
     this.textInputType = TextInputType.name,
+    required this.controller,
   });
 
   final String labelText;
   final IconData icon;
   final TextInputType textInputType;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
       keyboardType: textInputType,
       decoration: InputDecoration(
         labelText: labelText,
