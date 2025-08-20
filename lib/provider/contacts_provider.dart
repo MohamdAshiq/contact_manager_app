@@ -54,4 +54,24 @@ class ContactsProvider extends ChangeNotifier {
     await db.deleteContact(id);
     fetchAllContacts();
   }
+
+  // Search Implementation
+  String _searchQuery = "";
+  List<ContactModel> get filteredContacts {
+    if (_searchQuery.isEmpty) {
+      return contacts;
+    } else {
+      return contacts.where((contact) {
+        final fullName = '${contact.firstName} ${contact.lastName}'
+            .toLowerCase();
+        final query = _searchQuery.toLowerCase();
+        return fullName.contains(query);
+      }).toList();
+    }
+  }
+
+  void setSearchQuery(String query) {
+    _searchQuery = query;
+    notifyListeners(); 
+  }
 }
