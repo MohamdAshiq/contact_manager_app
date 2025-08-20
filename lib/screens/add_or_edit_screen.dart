@@ -25,6 +25,13 @@ class _AddOrEditScreenState extends State<AddOrEditScreen> {
   late TextEditingController emailController;
   late TextEditingController phoneNoController;
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  late FocusNode firstNameNode;
+  late FocusNode lastNameNode;
+  late FocusNode emailNode;
+  late FocusNode phoneNoNode;
+
   @override
   void initState() {
     final bool isEditScreen = widget.screenMode == ScreenMode.edit;
@@ -40,6 +47,11 @@ class _AddOrEditScreenState extends State<AddOrEditScreen> {
     phoneNoController = TextEditingController(
       text: isEditScreen ? widget.contactDetails!.phoneNo : null,
     );
+
+    firstNameNode = FocusNode();
+    lastNameNode = FocusNode();
+    emailNode = FocusNode();
+    phoneNoNode = FocusNode();
     super.initState();
   }
 
@@ -55,69 +67,85 @@ class _AddOrEditScreenState extends State<AddOrEditScreen> {
         ),
         title: Text(isEditScreen ? "Edit Contact" : "Add Contact"),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(10),
-        child: Column(
-          spacing: 15,
-          children: [
-            SizedBox(),
-            CustomTextFormField(
-              labelText: "First Name",
-              icon: Icons.person,
-              controller: firstNameController,
-            ),
-            CustomTextFormField(
-              labelText: "Last Name",
-              icon: Icons.person,
-              controller: lastNameController,
-            ),
-            CustomTextFormField(
-              labelText: "Email",
-              icon: Icons.email,
-              controller: emailController,
-              textInputType: TextInputType.emailAddress,
-            ),
-            CustomTextFormField(
-              labelText: "Phone No",
-              icon: Icons.phone,
-              controller: phoneNoController,
-              textInputType: TextInputType.phone,
-            ),
-            SizedBox(),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                fixedSize: Size(200, 55),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(10),
-                ),
+        child: Form(
+          key: _formKey,
+          autovalidateMode: AutovalidateMode.onUnfocus,
+          child: Column(
+            spacing: 15,
+            children: [
+              SizedBox(),
+              CustomTextFormField(
+                labelText: "First Name",
+                icon: Icons.person,
+                controller: firstNameController,
+                focusNode: firstNameNode,
+                onFieldSubmitted: (_) =>
+                    FocusScope.of(context).requestFocus(lastNameNode),
               ),
-              onPressed: isEditScreen
-                  ? () {
-                      context.read<ContactsProvider>().editContact(
-                        ContactModel(
-                          id: widget.contactDetails!.id,
-                          firstName: firstNameController.text.trim(),
-                          lastName: lastNameController.text.trim(),
-                          phoneNo: phoneNoController.text.trim(),
-                          email: emailController.text.trim(),
-                        ),
-                      );
-                      Navigator.pop(context);
-                    }
-                  : () {
-                      context.read<ContactsProvider>().addNewContact(
-                        ContactModel(
-                          firstName: firstNameController.text.trim(),
-                          lastName: lastNameController.text.trim(),
-                          phoneNo: phoneNoController.text.trim(),
-                          email: emailController.text.trim(),
-                        ),
-                      );
-                      Navigator.pop(context);
-                    },
-              child: Text(isEditScreen ? "Save Changes" : "Add Contact"),
-            ),
-          ],
+              CustomTextFormField(
+                labelText: "Last Name",
+                icon: Icons.person,
+                controller: lastNameController,
+                focusNode: lastNameNode,
+                onFieldSubmitted: (_) =>
+                    FocusScope.of(context).requestFocus(emailNode),
+              ),
+              CustomTextFormField(
+                labelText: "Email",
+                icon: Icons.email,
+                controller: emailController,
+                textInputType: TextInputType.emailAddress,
+                focusNode: emailNode,
+                onFieldSubmitted: (_) =>
+                    FocusScope.of(context).requestFocus(phoneNoNode),
+                isEmailField: true,
+              ),
+              CustomTextFormField(
+                labelText: "Phone No",
+                icon: Icons.phone,
+                controller: phoneNoController,
+                textInputType: TextInputType.phone,
+                isPhoneNoField: true,
+                focusNode: phoneNoNode,
+                onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
+              ),
+              SizedBox(),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(200, 55),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.circular(10),
+                  ),
+                ),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    !isEditScreen
+                        ? context.read<ContactsProvider>().addNewContact(
+                            ContactModel(
+                              firstName: firstNameController.text.trim(),
+                              lastName: lastNameController.text.trim(),
+                              phoneNo: phoneNoController.text.trim(),
+                              email: emailController.text.trim(),
+                            ),
+                          )
+                        : context.read<ContactsProvider>().editContact(
+                            ContactModel(
+                              id: widget.contactDetails!.id,
+                              firstName: firstNameController.text.trim(),
+                              lastName: lastNameController.text.trim(),
+                              phoneNo: phoneNoController.text.trim(),
+                              email: emailController.text.trim(),
+                            ),
+                          );
+                    Navigator.pop(context);
+                  }
+                },
+                child: Text(isEditScreen ? "Save Changes" : "Add Contact"),
+              ),
+            ],
+          ),
         ),
       ),
     );
