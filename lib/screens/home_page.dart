@@ -39,7 +39,7 @@ class HomePage extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => ContactDetailsScreen(
-                          contact: value.contacts[index],
+                          contactId: value.contacts[index].id!,
                         ),
                       ),
                     ),
@@ -57,7 +57,9 @@ class HomePage extends StatelessWidget {
                       top: 5,
                       bottom: 5,
                     ),
-                    title: Text(value.contacts[index].name),
+                    title: Text(
+                      "${value.contacts[index].firstName} ${value.contacts[index].lastName}",
+                    ),
                     subtitle: Padding(
                       padding: EdgeInsets.symmetric(vertical: 3),
                       child: Text(value.contacts[index].email),

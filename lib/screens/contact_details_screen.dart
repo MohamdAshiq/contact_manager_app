@@ -1,13 +1,14 @@
-import 'package:contact_manager_app/models/contact_model.dart';
 import 'package:contact_manager_app/models/screen_mode.dart';
+import 'package:contact_manager_app/provider/contacts_provider.dart';
 import 'package:contact_manager_app/screens/add_or_edit_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ContactDetailsScreen extends StatelessWidget {
-  const ContactDetailsScreen({super.key, required this.contact});
+  const ContactDetailsScreen({super.key, required this.contactId});
 
-  final ContactModel contact;
+  final int contactId;
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +25,13 @@ class ContactDetailsScreen extends StatelessWidget {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    AddOrEditScreen(screenMode: ScreenMode.edit),
+                builder: (context) => AddOrEditScreen(
+                  screenMode: ScreenMode.edit,
+                  contactDetails: context
+                      .read<ContactsProvider>()
+                      .contacts
+                      .firstWhere((element) => element.id == contactId),
+                ),
               ),
             ),
             icon: Icon(Icons.edit),
@@ -33,22 +39,29 @@ class ContactDetailsScreen extends StatelessWidget {
           IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
         ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(10),
         child: Column(
           spacing: 10,
           children: [
             Center(
               child: Hero(
-                tag: 'profile_icon_${contact.id}',
+                tag: 'profile_icon_$contactId',
                 child: Icon(Icons.account_circle, size: 120),
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 15),
-              child: Text(
-                contact.name,
-                style: Theme.of(context).textTheme.titleLarge,
+              child: Consumer<ContactsProvider>(
+                builder: (context, value, child) {
+                  final contact = value.contacts.firstWhere(
+                    (element) => element.id == contactId,
+                  );
+                  return Text(
+                    "${contact.firstName} ${contact.lastName}",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  );
+                },
               ),
             ),
             SizedBox(
@@ -63,7 +76,14 @@ class ContactDetailsScreen extends StatelessWidget {
                       ListTile(
                         contentPadding: EdgeInsets.only(left: 20, right: 10),
                         minTileHeight: 70,
-                        title: Text(contact.phoneNo),
+                        title: Consumer<ContactsProvider>(
+                          builder: (context, value, child) {
+                            final contact = value.contacts.firstWhere(
+                              (element) => element.id == contactId,
+                            );
+                            return Text(contact.phoneNo);
+                          },
+                        ),
                         subtitle: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 5),
                           child: Text("Mobile | India"),

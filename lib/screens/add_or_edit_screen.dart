@@ -6,9 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AddOrEditScreen extends StatefulWidget {
-  const AddOrEditScreen({super.key, required this.screenMode});
+  const AddOrEditScreen({
+    super.key,
+    required this.screenMode,
+    this.contactDetails,
+  });
 
   final ScreenMode screenMode;
+  final ContactModel? contactDetails;
 
   @override
   State<AddOrEditScreen> createState() => _AddOrEditScreenState();
@@ -22,10 +27,19 @@ class _AddOrEditScreenState extends State<AddOrEditScreen> {
 
   @override
   void initState() {
-    firstNameController = TextEditingController();
-    lastNameController = TextEditingController();
-    emailController = TextEditingController();
-    phoneNoController = TextEditingController();
+    final bool isEditScreen = widget.screenMode == ScreenMode.edit;
+    firstNameController = TextEditingController(
+      text: isEditScreen ? widget.contactDetails!.firstName : null,
+    );
+    lastNameController = TextEditingController(
+      text: isEditScreen ? widget.contactDetails!.lastName : null,
+    );
+    emailController = TextEditingController(
+      text: isEditScreen ? widget.contactDetails!.email : null,
+    );
+    phoneNoController = TextEditingController(
+      text: isEditScreen ? widget.contactDetails!.phoneNo : null,
+    );
     super.initState();
   }
 
@@ -78,13 +92,23 @@ class _AddOrEditScreenState extends State<AddOrEditScreen> {
                 ),
               ),
               onPressed: isEditScreen
-                  ? () {}
+                  ? () {
+                      context.read<ContactsProvider>().editContact(
+                        ContactModel(
+                          id: widget.contactDetails!.id,
+                          firstName: firstNameController.text.trim(),
+                          lastName: lastNameController.text.trim(),
+                          phoneNo: phoneNoController.text.trim(),
+                          email: emailController.text.trim(),
+                        ),
+                      );
+                      Navigator.pop(context);
+                    }
                   : () {
                       context.read<ContactsProvider>().addNewContact(
                         ContactModel(
-                          name:
-                              firstNameController.text.trim() +
-                              lastNameController.text.trim(),
+                          firstName: firstNameController.text.trim(),
+                          lastName: lastNameController.text.trim(),
                           phoneNo: phoneNoController.text.trim(),
                           email: emailController.text.trim(),
                         ),

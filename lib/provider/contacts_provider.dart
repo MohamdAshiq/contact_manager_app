@@ -38,4 +38,14 @@ class ContactsProvider extends ChangeNotifier {
       debugPrint("Exception : ${e.toString()}");
     }
   }
+
+  // Function to edit a contact
+  Future<void> editContact(ContactModel contact) async {
+    try {
+      await db.updateContact(contact);
+      fetchAllContacts();
+    } catch (e) {
+      debugPrint("Exception :${e.toString()}");
+    }
+  }
 }

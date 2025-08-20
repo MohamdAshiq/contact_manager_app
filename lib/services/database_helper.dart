@@ -23,7 +23,7 @@ class DatabaseHelper {
       version: 1,
       onCreate: (db, version) async {
         await db.execute(
-          "CREATE TABLE $tableName(id INTEGER PRIMARY KEY,name TEXT NOT NULL,phone TEXT UNIQUE,email TEXT UNIQUE)",
+          "CREATE TABLE $tableName(id INTEGER PRIMARY KEY,firstName TEXT NOT NULL,lastName TEXT NOT NULL,phone TEXT UNIQUE,email TEXT UNIQUE)",
         );
       },
     );
