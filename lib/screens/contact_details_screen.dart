@@ -1,7 +1,8 @@
 import 'package:contact_manager_app/models/screen_mode.dart';
 import 'package:contact_manager_app/provider/contacts_provider.dart';
 import 'package:contact_manager_app/screens/add_or_edit_screen.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:contact_manager_app/widgets/contact_details_footer_section.dart';
+import 'package:contact_manager_app/widgets/contact_details_header_section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,6 @@ class ContactDetailsScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
           icon: Icon(Icons.arrow_back_ios, size: 20),
         ),
-        // title: Text(contact.name),
         actions: [
           IconButton(
             onPressed: () => Navigator.push(
@@ -37,36 +37,7 @@ class ContactDetailsScreen extends StatelessWidget {
             icon: Icon(Icons.edit),
           ),
           IconButton(
-            onPressed: () {
-              showDialog<bool>(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: const Text("Confirm Deletion"),
-                    content: Text("Are you sure you want to delete ?"),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text("CANCEL"),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          context.read<ContactsProvider>().deleteContact(
-                            contactId,
-                          );
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          "OK",
-                          style: TextStyle(color: Colors.redAccent),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
+            onPressed: () => deleteDialogBox(context),
             icon: Icon(Icons.delete),
           ),
         ],
@@ -96,55 +67,7 @@ class ContactDetailsScreen extends StatelessWidget {
                 },
               ),
             ),
-            SizedBox(
-              width: double.infinity,
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 10,
-                    children: [
-                      ListTile(
-                        contentPadding: EdgeInsets.only(left: 20, right: 10),
-                        minTileHeight: 70,
-                        title: Consumer<ContactsProvider>(
-                          builder: (context, value, child) {
-                            final contact = value.contacts.firstWhere(
-                              (element) => element.id == contactId,
-                            );
-                            return Text(contact.phoneNo);
-                          },
-                        ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Text("Mobile | India"),
-                        ),
-                        trailing: IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.phone),
-                        ),
-                      ),
-                      ReUsableListTile(
-                        title: "Video Call",
-                        icon: Icons.videocam_rounded,
-                        iconColor: Colors.grey,
-                      ),
-                      ReUsableListTile(
-                        title: "Telegram",
-                        icon: CupertinoIcons.paperplane_fill,
-                        iconColor: Colors.blue,
-                      ),
-                      ReUsableListTile(
-                        title: "WhatsApp",
-                        icon: CupertinoIcons.chat_bubble_fill,
-                        iconColor: Colors.green,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            ContactDetailsHeaderSection(contactId: contactId),
             SizedBox(
               height: 30,
               width: MediaQuery.of(context).size.width * 0.9,
@@ -154,57 +77,39 @@ class ContactDetailsScreen extends StatelessWidget {
                 textAlign: TextAlign.start,
               ),
             ),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Column(
-                  children: [
-                    ReUsableListTile(
-                      title: "Default Ringtone",
-                      icon: Icons.arrow_forward_ios_rounded,
-                      iconColor: Colors.grey,
-                      iconSize: 18,
-                    ),
-                    ReUsableListTile(
-                      title: "QR Code",
-                      icon: Icons.arrow_forward_ios_rounded,
-                      iconColor: Colors.grey,
-                      iconSize: 18,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            ContactDetailsFooterSection(),
           ],
         ),
       ),
     );
   }
-}
 
-class ReUsableListTile extends StatelessWidget {
-  const ReUsableListTile({
-    super.key,
-    required this.title,
-    required this.icon,
-    required this.iconColor,
-    this.iconSize = 22,
-  });
-
-  final String title;
-  final IconData icon;
-  final Color iconColor;
-  final double iconSize;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(title),
-      contentPadding: EdgeInsets.only(left: 20, right: 10),
-      trailing: IconButton(
-        onPressed: () {},
-        icon: Icon(icon, color: iconColor, size: iconSize),
-      ),
+  Future<bool?> deleteDialogBox(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Confirm Deletion"),
+          content: Text("Are you sure you want to delete ?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("CANCEL"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                context.read<ContactsProvider>().deleteContact(contactId);
+                Navigator.pop(context);
+              },
+              child: const Text(
+                "OK",
+                style: TextStyle(color: Colors.redAccent),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

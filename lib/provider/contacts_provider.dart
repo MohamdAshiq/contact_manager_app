@@ -1,6 +1,5 @@
 import 'package:contact_manager_app/models/contact_model.dart';
 import 'package:contact_manager_app/services/database_helper.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ContactsProvider extends ChangeNotifier {
