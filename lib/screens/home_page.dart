@@ -31,7 +31,8 @@ class HomePage extends StatelessWidget {
         child: Consumer<ContactsProvider>(
           builder: (context, value, _) => value.isloading
               ? Center(child: CircularProgressIndicator())
-              : ListView.builder(
+              : value.contacts.isNotEmpty
+              ? ListView.builder(
                   padding: EdgeInsets.all(10),
                   itemCount: value.contacts.length,
                   itemBuilder: (context, index) => ListTile(
@@ -65,6 +66,12 @@ class HomePage extends StatelessWidget {
                       child: Text(value.contacts[index].email),
                     ),
                     trailing: Icon(Icons.arrow_forward_ios_rounded, size: 20),
+                  ),
+                )
+              : Center(
+                  child: Text(
+                    "No Contacts Found",
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
         ),

@@ -1,6 +1,7 @@
 import 'package:contact_manager_app/models/contact_model.dart';
 import 'package:contact_manager_app/services/database_helper.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class ContactsProvider extends ChangeNotifier {
   ContactsProvider() {
@@ -20,7 +21,7 @@ class ContactsProvider extends ChangeNotifier {
   Future<void> fetchAllContacts() async {
     try {
       _contacts = await db.getContacts();
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(Durations.medium1);
     } catch (e) {
       debugPrint("Exception : ${e.toString()}");
     } finally {
@@ -47,5 +48,11 @@ class ContactsProvider extends ChangeNotifier {
     } catch (e) {
       debugPrint("Exception :${e.toString()}");
     }
+  }
+
+  // Function to Delete a contact
+  Future<void> deleteContact(int id) async {
+    await db.deleteContact(id);
+    fetchAllContacts();
   }
 }

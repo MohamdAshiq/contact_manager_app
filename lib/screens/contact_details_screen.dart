@@ -36,7 +36,39 @@ class ContactDetailsScreen extends StatelessWidget {
             ),
             icon: Icon(Icons.edit),
           ),
-          IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+          IconButton(
+            onPressed: () {
+              showDialog<bool>(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text("Confirm Deletion"),
+                    content: Text("Are you sure you want to delete ?"),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("CANCEL"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          context.read<ContactsProvider>().deleteContact(
+                            contactId,
+                          );
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          "OK",
+                          style: TextStyle(color: Colors.redAccent),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            icon: Icon(Icons.delete),
+          ),
         ],
       ),
       body: SingleChildScrollView(
